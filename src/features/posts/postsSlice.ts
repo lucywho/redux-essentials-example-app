@@ -1,15 +1,26 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
+import { sub } from 'date-fns' //to mock different timestamps on initial state
 
 export interface Post {
   id: string
   title: string
   content: string
-  user?: string
+  user: string
+  date: string
 }
 
 type PostUpdate = Pick<Post, 'id' | 'title' | 'content' | 'user'>
 
-const initialState: Post[] = [{ id: '1', title: 'First Post!', content: 'Hello!', user: '1' }]
+const initialState: Post[] = [
+  { id: '1', title: 'First Post!', content: 'Hello!', user: '1', date: sub(new Date(), { minutes: 10 }).toISOString() },
+  {
+    id: '2',
+    title: 'Second Post!',
+    content: 'Great new content!',
+    user: '2',
+    date: sub(new Date(), { minutes: 5 }).toISOString(),
+  },
+]
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -25,7 +36,8 @@ const postsSlice = createSlice({
             id: nanoid(),
             title,
             content,
-            userId,
+            user: userId,
+            date: new Date().toISOString(),
           },
         }
       },

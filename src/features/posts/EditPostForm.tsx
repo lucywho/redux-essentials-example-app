@@ -46,7 +46,7 @@ export const EditPostForm = () => {
         <label htmlFor="postTitle">Post Title:</label>
         <input type="text" id="postTitle" name="postTitle" defaultValue={post.title} required />
         <label htmlFor="userId">User:</label>
-        <select title="User" id="postAuthor" name="userId" defaultValue="" required>
+        <select title="User" id="postAuthor" name="userId" defaultValue={post.user} required>
           <option value=""></option>
           {usersOptions}
         </select>
