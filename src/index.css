@@ -39,6 +39,7 @@ nav {
 
 nav section {
   width: 100%;
+  min-height: 112px;
 }
 
 nav section h1 {
@@ -102,6 +103,10 @@ nav a:hover {
 .navContent .userDetails {
   display: flex;
   align-items: center;
+}
+
+.userDetails span {
+  margin-right: 5px;
 }
 
 .badge {

@@ -1,18 +1,14 @@
-import { useNavigate, useParams } from 'react-router-dom'
-
-import { useAppSelector, useAppDispatch } from '@/app/hooks'
-import { postUpdated, selectPostById } from './postsSlice'
 import { selectAllUsers } from '../users/usersSlice'
+import { useNavigate, useParams } from 'react-router-dom'
+import { postUpdated, selectPostById } from './postsSlice'
+import { useAppSelector, useAppDispatch } from '@/app/hooks'
 
 export const EditPostForm = () => {
-  const { postId } = useParams()
-
-  const post = postId ? useAppSelector((state) => selectPostById(state, postId)) : undefined
-
-  const users = useAppSelector(selectAllUsers)
-
-  const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const { postId } = useParams()
+  const dispatch = useAppDispatch()
+  const users = useAppSelector(selectAllUsers)
+  const post = postId ? useAppSelector((state) => selectPostById(state, postId)) : undefined
 
   if (!post) {
     return (
@@ -23,9 +19,9 @@ export const EditPostForm = () => {
   }
 
   const savePostChanges = (formData: FormData) => {
+    const userId = formData.get('userId') as string
     const title = formData.get('postTitle') as string
     const content = formData.get('postContent') as string
-    const userId = formData.get('userId') as string
 
     if (title && content) {
       dispatch(postUpdated({ id: post.id, title, content, user: userId }))
