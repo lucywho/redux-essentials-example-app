@@ -1,4 +1,5 @@
-import { postAdded } from './postsSlice'
+import React, { useState, useTransition } from 'react'
+import { addNewPost } from './postsSlice'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectCurrentUsername } from '@/features/auth/authSlice'
@@ -7,15 +8,26 @@ export const AddPostForm = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const userId = useAppSelector(selectCurrentUsername)!
+  const [addRequestStatus, setAddRequestStatus] = useState<'idle' | 'pending'>('idle')
+  const [isSubmitting, startTransition] = useTransition()
 
-  const addPost = (formData: FormData) => {
-    const title = formData.get('postTitle') as string
-    const content = formData.get('postContent') as string
+  const addPost = async (formData: FormData) => {
+    setAddRequestStatus('pending')
+    startTransition(() => {
+      const title = formData.get('postTitle') as string
+      const content = formData.get('postContent') as string
 
-    if (title && content) {
-      dispatch(postAdded(title, content, userId))
-    }
-    navigate(`/posts`)
+      if (title && content) {
+        try {
+          dispatch(addNewPost({ title, content, user: userId })).unwrap()
+          navigate(`/posts`)
+        } catch (error) {
+          console.error(error)
+        } finally {
+          setAddRequestStatus('idle')
+        }
+      }
+    })
   }
 
   return (
@@ -26,7 +38,9 @@ export const AddPostForm = () => {
         <input type="text" id="postTitle" name="postTitle" defaultValue="" required />
         <label htmlFor="postContent">Content:</label>
         <textarea id="postContent" name="postContent" defaultValue="" required />
-        <button type="submit">Save Post</button>
+        <button type="submit" disabled={isSubmitting}>
+          Save Post
+        </button>
       </form>
     </section>
   )

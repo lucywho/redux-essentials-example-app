@@ -54,7 +54,7 @@ const firstFromArray = <T>(items: T | T[] | readonly T[]) => {
   return ([] as T[]).concat(items)[0]
 }
 
-type ReactionName = 'thumbsUp' | 'tada' | 'heart' | 'rocket' | 'eyes'
+type ReactionName = 'thumbsUp' | 'hooray' | 'heart' | 'rocket' | 'eyes'
 
 /* MSW Data Model Setup */
 
@@ -85,7 +85,7 @@ export const db = factory({
   reaction: {
     id: primaryKey(nanoid),
     thumbsUp: Number,
-    tada: Number,
+    hooray: Number,
     heart: Number,
     rocket: Number,
     eyes: Number,
