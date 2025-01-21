@@ -9,25 +9,27 @@ export const AddPostForm = () => {
   const dispatch = useAppDispatch()
   const userId = useAppSelector(selectCurrentUsername)!
   const [addRequestStatus, setAddRequestStatus] = useState<'idle' | 'pending'>('idle')
-  const [isSubmitting, startTransition] = useTransition()
+  const [hasFailed, setHasFailed] = useState(false)
 
   const addPost = async (formData: FormData) => {
     setAddRequestStatus('pending')
-    startTransition(() => {
-      const title = formData.get('postTitle') as string
-      const content = formData.get('postContent') as string
+    const title = formData.get('postTitle') as string
+    const content = formData.get('postContent') as string
 
-      if (title && content) {
-        try {
-          dispatch(addNewPost({ title, content, user: userId })).unwrap()
+    if (title && content) {
+      dispatch(addNewPost({ title, content, user: userId }))
+        .unwrap()
+        .then(() => {
           navigate(`/posts`)
-        } catch (error) {
+        })
+        .catch((error) => {
+          setHasFailed(true)
           console.error(error)
-        } finally {
+        })
+        .finally(() => {
           setAddRequestStatus('idle')
-        }
-      }
-    })
+        })
+    }
   }
 
   return (
@@ -38,10 +40,11 @@ export const AddPostForm = () => {
         <input type="text" id="postTitle" name="postTitle" defaultValue="" required />
         <label htmlFor="postContent">Content:</label>
         <textarea id="postContent" name="postContent" defaultValue="" required />
-        <button type="submit" disabled={isSubmitting}>
+        <button type="submit" disabled={addRequestStatus === 'pending'}>
           Save Post
         </button>
       </form>
+      {hasFailed && <p>Something went wrong, please try again</p>}
     </section>
   )
 }
