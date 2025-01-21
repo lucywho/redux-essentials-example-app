@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { addNewPost } from './postsSlice'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -8,8 +8,7 @@ export const AddPostForm = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const userId = useAppSelector(selectCurrentUsername)!
-  const [addRequestStatus, setAddRequestStatus] = useState<'idle' | 'pending'>('idle')
-  const [hasFailed, setHasFailed] = useState(false)
+  const [addRequestStatus, setAddRequestStatus] = useState<'idle' | 'pending' | 'succeeded' | 'failed'>('idle')
 
   const addPost = async (formData: FormData) => {
     setAddRequestStatus('pending')
@@ -23,11 +22,8 @@ export const AddPostForm = () => {
           navigate(`/posts`)
         })
         .catch((error) => {
-          setHasFailed(true)
+          setAddRequestStatus('failed')
           console.error(error)
-        })
-        .finally(() => {
-          setAddRequestStatus('idle')
         })
     }
   }
@@ -41,10 +37,10 @@ export const AddPostForm = () => {
         <label htmlFor="postContent">Content:</label>
         <textarea id="postContent" name="postContent" defaultValue="" required />
         <button type="submit" disabled={addRequestStatus === 'pending'}>
-          Save Post
+          {addRequestStatus !== 'pending' ? 'Save Post' : 'Saving...'}
         </button>
       </form>
-      {hasFailed && <p>Something went wrong, please try again</p>}
+      {addRequestStatus === 'failed' && <p>Something went wrong, please try again</p>}
     </section>
   )
 }
