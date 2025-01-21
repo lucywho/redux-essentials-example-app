@@ -41,7 +41,11 @@ const notificationsSlice = createSlice({
         read: false,
         isNew: true,
       }))
-      state.forEach((notification) => (notification.isNew = !notification.read))
+
+      state.forEach((notification) => {
+        notification.isNew = !notification.read
+      })
+
       state.push(...notificationsWithMetadata)
       state.sort((a, b) => b.date.localeCompare(a.date))
     })
