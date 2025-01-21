@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
-import { UserIcon } from './UserIcon'
-import { userLoggedOut } from '@/features/auth/authSlice'
-import { selectCurrentUser } from '@/features/users/usersSlice'
-import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import React from 'react'
+import { UserIcon } from './UserIcon'
+import { Link } from 'react-router-dom'
+import { logout } from '@/features/auth/authSlice'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
+import { selectCurrentUser } from '@/features/users/usersSlice'
+import { fetchNotifications } from '@/features/notifications/notificationsSlice'
 
 export const Navbar = () => {
   const dispatch = useAppDispatch()
@@ -13,7 +14,11 @@ export const Navbar = () => {
 
   if (isLoggedIn) {
     const onLogoutClicked = () => {
-      dispatch(userLoggedOut())
+      dispatch(logout())
+    }
+
+    const fetchNewNotifications = () => {
+      dispatch(fetchNotifications())
     }
 
     navContent = (
@@ -21,6 +26,11 @@ export const Navbar = () => {
         <div className="navLinks">
           <Link to="/posts">All Posts</Link>
           <Link to="/posts/add-new-post">Add Post</Link>
+          <Link to="/users">All users</Link>
+          <Link to="/notifications">Notifications</Link>
+          <button type="button" className="button small" onClick={fetchNewNotifications}>
+            Refresh Notifications
+          </button>
         </div>
         <div className="userDetails">
           <UserIcon size="32px" />
@@ -36,7 +46,7 @@ export const Navbar = () => {
   return (
     <nav>
       <section>
-        <h1>Redux Essentials Example</h1>
+        <h1>PurpleSky</h1>
         {navContent}
       </section>
     </nav>

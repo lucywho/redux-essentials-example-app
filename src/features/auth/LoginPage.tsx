@@ -1,4 +1,4 @@
-import { userLoggedIn } from './authSlice'
+import { login } from './authSlice'
 import { useNavigate } from 'react-router-dom'
 import { selectAllUsers } from '@/features/users/usersSlice'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
@@ -8,10 +8,9 @@ export const LoginPage = () => {
   const dispatch = useAppDispatch()
   const users = useAppSelector(selectAllUsers)
 
-  const loginUser = (formData: FormData) => {
+  const loginUser = async (formData: FormData) => {
     const username = formData.get('username') as string
-    dispatch(userLoggedIn(username))
-    navigate('/posts')
+    dispatch(login(username)).then(() => navigate('/posts'))
   }
 
   const usersOptions = users.map((user) => (

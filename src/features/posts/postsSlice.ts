@@ -1,6 +1,6 @@
 import { client } from '@/api/client'
 import { RootState } from '@/app/store'
-import { userLoggedOut } from '../auth/authSlice'
+import { login, logout } from '../auth/authSlice'
 import { createAppAsyncThunk } from '@/app/withTypes'
 import { buildCreateSlice, asyncThunkCreator } from '@reduxjs/toolkit'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -94,7 +94,7 @@ const postsSlice = createAppSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(userLoggedOut, (state) => {
+      .addCase(logout.fulfilled, (state) => {
         return initialState
       })
       .addCase(addNewPost.fulfilled, (state, action) => {
@@ -120,6 +120,11 @@ export default postsSlice.reducer
 
 export const selectAllPosts = (state: RootState) => state.posts.posts
 export const selectPostById = (state: RootState, postId: string) => state.posts.posts.find((post) => post.id === postId)
+export const selectPostsByUser = (state: RootState, userId: string) => {
+  //revisit this
+  const allPosts = selectAllPosts(state)
+  return allPosts.filter((post) => post.user === userId)
+}
 
 export const selectPostsStatus = (state: RootState) => state.posts.status
 export const selectPostsError = (state: RootState) => state.posts.error
